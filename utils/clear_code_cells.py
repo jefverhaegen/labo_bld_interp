@@ -18,9 +18,9 @@ def clear_code_cells(nb_path):
     new_nb_path = nb_path.parent / f'{nb_path.stem}_nocode.ipynb'
     json.dump(nb_json, new_nb_path.open('w'), indent=' ',  ensure_ascii=False)
 
+    patch_path = nb_path.parent / f'.{nb_path.stem}.patch'
     os.system(
-        f'diff -u "{new_nb_path}" "{nb_path}" > '
-        f'"{nb_path.parent / nb_path.stem}.patch"'
+        f'diff -u "{new_nb_path}" "{nb_path}" > "{patch_path}"'
     )
     os.system(
         f'mv "{new_nb_path}" "{nb_path}"'
@@ -29,7 +29,7 @@ def clear_code_cells(nb_path):
 
 def undo_clear_code_cells(nb_path):
     nb_path = Path(nb_path)
-    patch_path = nb_path.parent / f'{nb_path.stem}.patch'
+    patch_path = nb_path.parent / f'.{nb_path.stem}.patch'
     os.system(
         f'patch "{nb_path}" "{patch_path}"'
     )
