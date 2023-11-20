@@ -1,0 +1,500 @@
+--- notebooks/02_create_dataset_nocode.ipynb	2023-11-20 17:44:07.732629568 +0100
++++ notebooks/02_create_dataset.ipynb	2023-11-20 17:43:39.175190264 +0100
+@@ -31,7 +31,9 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "from torchvision.datasets import MNIST\n",
++    "\n",
++    "mnist_ds = MNIST(root='../data', download=True)"
+    ]
+   },
+   {
+@@ -49,7 +51,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "mnist_ds[0]"
+    ]
+   },
+   {
+@@ -67,7 +69,8 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "img, label = mnist_ds[10]\n",
++    "img"
+    ]
+   },
+   {
+@@ -85,7 +88,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "len(mnist_ds)"
+    ]
+   },
+   {
+@@ -118,7 +121,46 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "import warnings\n",
++    "\n",
++    "# Ignore 'DataFrame.swapaxes' is deprecated warnings\n",
++    "warnings.simplefilter(action='ignore', category=FutureWarning)\n",
++    "\n",
++    "import pandas as pd\n",
++    "from pathlib import Path\n",
++    "from torch.utils.data import Dataset\n",
++    "from PIL import Image\n",
++    "\n",
++    "\n",
++    "class PokemonDataset(Dataset):\n",
++    "    def __init__(self, data_path, transform=None):\n",
++    "        data_path = Path(data_path)\n",
++    "        df = pd.DataFrame([\n",
++    "            {\n",
++    "                'image': str(img_path),\n",
++    "                'label': img_path.parent.name\n",
++    "            }\n",
++    "            for img_path in data_path.glob('data/*/*')\n",
++    "        ])\n",
++    "\n",
++    "        # Store attributes\n",
++    "        self.data_path = data_path\n",
++    "        self.transform = transform\n",
++    "        self.df = df\n",
++    "\n",
++    "    def __len__(self):\n",
++    "        return len(self.df)\n",
++    "\n",
++    "    def __getitem__(self, idx):\n",
++    "        img_path = self.df['image'][idx]\n",
++    "        label = self.df['label'][idx]\n",
++    "\n",
++    "        img = Image.open(img_path)\n",
++    "\n",
++    "        if self.transform is not None:\n",
++    "            img = self.transform(img)\n",
++    "\n",
++    "        return (img, label)"
+    ]
+   },
+   {
+@@ -136,7 +178,8 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "ds = PokemonDataset('../data/PokemonGen1')\n",
++    "ds[0]"
+    ]
+   },
+   {
+@@ -167,7 +210,14 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "data_path = Path('../data/PokemonGen1')\n",
++    "df = pd.DataFrame([\n",
++    "    {\n",
++    "        'image': str(img_path),\n",
++    "        'label': img_path.parent.name\n",
++    "    }\n",
++    "    for img_path in data_path.glob('data/*/*')\n",
++    "])"
+    ]
+   },
+   {
+@@ -187,7 +237,7 @@
+    },
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "df['label'].unique()"
+    ]
+   },
+   {
+@@ -207,7 +257,7 @@
+    },
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "sorted(df['label'].unique())"
+    ]
+   },
+   {
+@@ -227,7 +277,8 @@
+    },
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "for i, label in enumerate(sorted(df['label'].unique())):\n",
++    "    print(i, label)"
+    ]
+   },
+   {
+@@ -247,7 +298,12 @@
+    },
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "label_to_int = {}\n",
++    "\n",
++    "for i, label in enumerate(sorted(df['label'].unique())):\n",
++    "    label_to_int[label] = i\n",
++    "\n",
++    "label_to_int"
+    ]
+   },
+   {
+@@ -267,7 +323,8 @@
+    },
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "label_to_int = {label: i for i, label in enumerate(sorted(df['label'].unique()))}\n",
++    "label_to_int"
+    ]
+   },
+   {
+@@ -285,7 +342,43 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "class PokemonDataset(Dataset):\n",
++    "    def __init__(self, data_path, transform=None):\n",
++    "        data_path = Path(data_path)\n",
++    "        df = pd.DataFrame([\n",
++    "            {\n",
++    "                'image': str(img_path),\n",
++    "                'label': img_path.parent.name\n",
++    "            }\n",
++    "            for img_path in Path(data_path).glob('data/*/*')\n",
++    "        ])\n",
++    "\n",
++    "        # Create mapping from label to integer\n",
++    "        label_to_int = {\n",
++    "            label: i\n",
++    "            for i, label in enumerate(sorted(df['label'].unique()))\n",
++    "        }\n",
++    "\n",
++    "        # Store attributes\n",
++    "        self.data_path = data_path\n",
++    "        self.label_to_int = label_to_int\n",
++    "        self.transform = transform\n",
++    "        self.df = df\n",
++    "\n",
++    "    def __len__(self):\n",
++    "        return len(self.df)\n",
++    "\n",
++    "    def __getitem__(self, idx):\n",
++    "        img_path = self.df['image'][idx]\n",
++    "        label = self.df['label'][idx]\n",
++    "        int_label = self.label_to_int[label]\n",
++    "\n",
++    "        img = Image.open(img_path)\n",
++    "\n",
++    "        if self.transform is not None:\n",
++    "            img = self.transform(img)\n",
++    "\n",
++    "        return (img, int_label)"
+    ]
+   },
+   {
+@@ -303,7 +396,8 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "ds = PokemonDataset('../data/PokemonGen1/')\n",
++    "ds[0]"
+    ]
+   },
+   {
+@@ -332,7 +426,11 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "from sklearn.model_selection import train_test_split\n",
++    "\n",
++    "df_trainval, df_test = train_test_split(df, train_size=0.8, random_state=42)\n",
++    "\n",
++    "df_train, df_val = train_test_split(df_trainval, train_size=0.8, random_state=42)"
+    ]
+   },
+   {
+@@ -350,7 +448,56 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "class PokemonDataset(Dataset):\n",
++    "    def __init__(self, data_path, subset, transform=None):\n",
++    "        data_path = Path(data_path)\n",
++    "        df = pd.DataFrame([\n",
++    "            {\n",
++    "                'image': str(img_path),\n",
++    "                'label': img_path.parent.name\n",
++    "            }\n",
++    "            for img_path in data_path.glob('data/*/*')\n",
++    "        ])\n",
++    "\n",
++    "        # Create mapping from label to integer\n",
++    "        label_to_int = {\n",
++    "            label: i\n",
++    "            for i, label in enumerate(sorted(df['label'].unique()))\n",
++    "        }\n",
++    "\n",
++    "        # Split into train, test, val\n",
++    "        df_trainval, df_test = train_test_split(df, train_size=0.8, random_state=42)\n",
++    "        df_train, df_val = train_test_split(df_trainval, train_size=0.8, random_state=42)\n",
++    "\n",
++    "        # Store attributes\n",
++    "        self.data_path = data_path\n",
++    "        self.label_to_int = label_to_int\n",
++    "        self.transform = transform\n",
++    "        self.subset = subset\n",
++    "\n",
++    "        if subset == 'train':\n",
++    "            self.df = df_train.reset_index()\n",
++    "        elif subset == 'val':\n",
++    "            self.df = df_val.reset_index()\n",
++    "        elif subset == 'test':\n",
++    "            self.df = df_test.reset_index()\n",
++    "        else:\n",
++    "            raise ValueError(f'Unknown subset \"{subset}\"')\n",
++    "\n",
++    "    def __len__(self):\n",
++    "        return len(self.df)\n",
++    "\n",
++    "    def __getitem__(self, idx):\n",
++    "        img_path = self.df['image'][idx]\n",
++    "        label = self.df['label'][idx]\n",
++    "        int_label = self.label_to_int[label]\n",
++    "\n",
++    "        img = Image.open(img_path)\n",
++    "\n",
++    "        if self.transform is not None:\n",
++    "            img = self.transform(img)\n",
++    "\n",
++    "        return (img, int_label)"
+    ]
+   },
+   {
+@@ -368,7 +515,8 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "ds_train = PokemonDataset(data_path='../data/PokemonGen1', subset='train')\n",
++    "ds_train[0]"
+    ]
+   },
+   {
+@@ -394,7 +542,16 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "import numpy as np\n",
++    "\n",
++    "# Define k (the number of folds)\n",
++    "k = 5\n",
++    "\n",
++    "# Split dataset into train+val and test\n",
++    "df_trainval, df_test = train_test_split(df, train_size=0.8, random_state=42)\n",
++    "\n",
++    "# Split the train+val into k folds\n",
++    "folds = np.array_split(df_trainval, k)"
+    ]
+   },
+   {
+@@ -412,7 +569,12 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "val_fold = 0\n",
++    "\n",
++    "df_val = folds[val_fold]\n",
++    "train_folds = [fold for i, fold in enumerate(folds)\n",
++    "               if i != val_fold]\n",
++    "df_train = pd.concat(train_folds)"
+    ]
+   },
+   {
+@@ -430,7 +592,59 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "class PokemonDataset(Dataset):\n",
++    "    def __init__(self, data_path, subset, k=5, val_fold=0, transform=None):\n",
++    "        data_path = Path(data_path)\n",
++    "        df = pd.DataFrame([\n",
++    "            {\n",
++    "                'image': str(img_path),\n",
++    "                'label': img_path.parent.name\n",
++    "            }\n",
++    "            for img_path in data_path.glob('data/*/*')\n",
++    "        ])\n",
++    "\n",
++    "        # Create mapping from label to integer\n",
++    "        label_to_int = {\n",
++    "            label: i\n",
++    "            for i, label in enumerate(sorted(df['label'].unique()))\n",
++    "        }\n",
++    "\n",
++    "        # Split into train, test, val\n",
++    "        df_trainval, df_test = train_test_split(df, train_size=0.8, random_state=42)\n",
++    "        folds = np.array_split(df_trainval, k)\n",
++    "        df_val = folds[val_fold]\n",
++    "        train_folds = [fold for i, fold in enumerate(folds)\n",
++    "                       if i != val_fold]\n",
++    "        df_train = pd.concat(train_folds)\n",
++    "\n",
++    "        # Store attributes\n",
++    "        self.data_path = data_path\n",
++    "        self.label_to_int = label_to_int\n",
++    "        self.transform = transform\n",
++    "\n",
++    "        if subset == 'train':\n",
++    "            self.df = df_train.reset_index()\n",
++    "        elif subset == 'val':\n",
++    "            self.df = df_val.reset_index()\n",
++    "        elif subset == 'test':\n",
++    "            self.df = df_test.reset_index()\n",
++    "        else:\n",
++    "            raise ValueError(f'Unknown subset \"{subset}\"')\n",
++    "\n",
++    "    def __len__(self):\n",
++    "        return len(self.df)\n",
++    "\n",
++    "    def __getitem__(self, idx):\n",
++    "        img_path = self.df['image'][idx]\n",
++    "        label = self.df['label'][idx]\n",
++    "        int_label = self.label_to_int[label]\n",
++    "\n",
++    "        img = Image.open(img_path)\n",
++    "\n",
++    "        if self.transform is not None:\n",
++    "            img = self.transform(img)\n",
++    "\n",
++    "        return (img, int_label)"
+    ]
+   },
+   {
+@@ -448,7 +662,30 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "import torch\n",
++    "from torchvision.transforms import v2\n",
++    "\n",
++    "# Create transforms\n",
++    "train_tfms = v2.Compose([\n",
++    "    v2.ToImage(),\n",
++    "    v2.RandomHorizontalFlip(),\n",
++    "    v2.RandomRotation(30),\n",
++    "    v2.RandomResizedCrop(224, antialias=True),\n",
++    "    v2.ToDtype(torch.float32, scale=True),\n",
++    "    v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),\n",
++    "])\n",
++    "val_tfms = v2.Compose([\n",
++    "    v2.ToImage(),\n",
++    "    v2.Resize(224, antialias=True),\n",
++    "    v2.CenterCrop(224),\n",
++    "    v2.ToDtype(torch.float32, scale=True),\n",
++    "    v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),\n",
++    "])\n",
++    "\n",
++    "# Create datasets\n",
++    "ds_train = PokemonDataset('../data/PokemonGen1', 'train', transform=train_tfms)\n",
++    "ds_val = PokemonDataset('../data/PokemonGen1', 'val', transform=val_tfms)\n",
++    "ds_test = PokemonDataset('../data/PokemonGen1', 'test', transform=val_tfms)"
+    ]
+   },
+   {
+@@ -482,7 +719,10 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "from torch.utils.data import DataLoader\n",
++    "\n",
++    "# Create trainin data loader\n",
++    "dl_train = DataLoader(ds_train, batch_size=10)"
+    ]
+   },
+   {
+@@ -502,7 +742,10 @@
+    },
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "for x in dl_train:\n",
++    "    break\n",
++    "\n",
++    "x"
+    ]
+   },
+   {
+@@ -524,7 +767,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "dl_train = DataLoader(ds_train, batch_size=10, shuffle=True)"
+    ]
+   },
+   {
+@@ -542,7 +785,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "dl_train = DataLoader(ds_train, batch_size=10, shuffle=True, num_workers=10)"
+    ]
+   },
+   {
+@@ -560,7 +803,10 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "# Create data loaders\n",
++    "dl_train = DataLoader(ds_train, batch_size=10, shuffle=True)\n",
++    "dl_val = DataLoader(ds_val, batch_size=10, shuffle=False)\n",
++    "dl_test = DataLoader(ds_test, batch_size=10, shuffle=False)"
+    ]
+   },
+   {
+@@ -577,9 +823,7 @@
+    "id": "9f4cccdf-820d-4540-abba-5ea4d3bf1381",
+    "metadata": {},
+    "outputs": [],
+-   "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
+-   ]
++   "source": []
+   }
+  ],
+  "metadata": {
+@@ -603,4 +847,4 @@
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+-}
+\ No newline at end of file
++}

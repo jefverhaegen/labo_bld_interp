@@ -1,0 +1,935 @@
+--- notebooks/01_inspect_data_nocode.ipynb	2023-11-20 17:44:07.668626366 +0100
++++ notebooks/01_inspect_data.ipynb	2023-11-20 17:42:23.719278254 +0100
+@@ -41,7 +41,9 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "from pathlib import Path\n",
++    "\n",
++    "data_path = Path('../data/PokemonGen1')"
+    ]
+   },
+   {
+@@ -59,7 +61,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "data_path.glob('*')"
+    ]
+   },
+   {
+@@ -81,7 +83,8 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "paths_generator = data_path.glob('*')\n",
++    "next(paths_generator)"
+    ]
+   },
+   {
+@@ -99,7 +102,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "next(paths_generator)"
+    ]
+   },
+   {
+@@ -123,7 +126,10 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "paths_generator = data_path.glob('*')\n",
++    "\n",
++    "for p in paths_generator:\n",
++    "    print(p)"
+    ]
+   },
+   {
+@@ -141,7 +147,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "list(data_path.glob('*'))"
+    ]
+   },
+   {
+@@ -159,7 +165,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "[p for p in data_path.glob('*')]"
+    ]
+   },
+   {
+@@ -179,7 +185,7 @@
+    },
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "list(data_path.glob('data/*'))"
+    ]
+   },
+   {
+@@ -197,7 +203,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "len(list(data_path.glob('data/*')))"
+    ]
+   },
+   {
+@@ -215,7 +221,8 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "file_paths = list(data_path.glob('data/*/*'))\n",
++    "len(file_paths)"
+    ]
+   },
+   {
+@@ -233,7 +240,8 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "path = file_paths[0]\n",
++    "path"
+    ]
+   },
+   {
+@@ -243,7 +251,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "str(path)"
+    ]
+   },
+   {
+@@ -253,7 +261,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "path.name"
+    ]
+   },
+   {
+@@ -263,7 +271,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "path.suffix"
+    ]
+   },
+   {
+@@ -281,7 +289,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "path.stem"
+    ]
+   },
+   {
+@@ -299,7 +307,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "path.parent"
+    ]
+   },
+   {
+@@ -317,7 +325,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "path.parent.name"
+    ]
+   },
+   {
+@@ -335,7 +343,12 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "exts = set()\n",
++    "\n",
++    "for p in data_path.glob('data/*/*'):\n",
++    "    exts.add(p.suffix)\n",
++    "\n",
++    "exts"
+    ]
+   },
+   {
+@@ -353,7 +366,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "{p.suffix for p in data_path.glob('data/*/*')}"
+    ]
+   },
+   {
+@@ -389,7 +402,13 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "import pandas as pd\n",
++    "\n",
++    "pd.DataFrame([\n",
++    "    {'image': 'PokemonGen1/data/Pikachu/00dd440af1919a8533cc461c1691889b.png', 'label': 'Pikachu'},\n",
++    "    {'image': 'PokemonGen1/data/Raichu/0103285f70bd89588018fab3b0f2fbe9.jpg', 'label': 'Raichu'},\n",
++    "    {'image': 'PokemonGen1/data/Bulbasaur/00f594fb387f04c7e4aefcd603d324f1.png', 'label': 'Bulbasaur'},\n",
++    "])"
+    ]
+   },
+   {
+@@ -407,7 +426,15 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "rows = []\n",
++    "\n",
++    "for img_path in data_path.glob('data/*/*'):\n",
++    "    rows.append({\n",
++    "        'image': str(img_path),\n",
++    "        'label': img_path.parent.name\n",
++    "    })\n",
++    "\n",
++    "df = pd.DataFrame(rows)"
+    ]
+   },
+   {
+@@ -417,7 +444,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "df"
+    ]
+   },
+   {
+@@ -435,7 +462,13 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "df = pd.DataFrame([\n",
++    "    {\n",
++    "        'image': str(img_path),\n",
++    "        'label': img_path.parent.name\n",
++    "    }\n",
++    "    for img_path in data_path.glob('data/*/*')\n",
++    "])"
+    ]
+   },
+   {
+@@ -461,7 +494,9 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "from matplotlib import pyplot as plt\n",
++    "\n",
++    "fig, ax = plt.subplots()"
+    ]
+   },
+   {
+@@ -479,7 +514,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "df.groupby('label').apply(len)"
+    ]
+   },
+   {
+@@ -497,7 +532,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "count_per_label = df.groupby('label').apply(len)"
+    ]
+   },
+   {
+@@ -515,7 +550,8 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "ax.bar(x=count_per_label.index, height=count_per_label.values)\n",
++    "fig"
+    ]
+   },
+   {
+@@ -533,7 +569,8 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "fig, ax = plt.subplots(figsize=(30, 5))\n",
++    "ax.bar(x=count_per_label.index, height=count_per_label.values)"
+    ]
+   },
+   {
+@@ -551,7 +588,9 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "fig, ax = plt.subplots(figsize=(30, 5))\n",
++    "ax.bar(x=count_per_label.index, height=count_per_label.values)\n",
++    "ax.tick_params(axis='x', labelrotation=90)"
+    ]
+   },
+   {
+@@ -569,7 +608,8 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "count_per_label = count_per_label.sort_values(ascending=False)\n",
++    "count_per_label"
+    ]
+   },
+   {
+@@ -587,7 +627,10 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "fig, ax = plt.subplots(figsize=(30, 5))\n",
++    "\n",
++    "ax.bar(count_per_label.index, count_per_label.values)\n",
++    "ax.tick_params(axis='x', labelrotation=90)"
+    ]
+   },
+   {
+@@ -605,7 +648,12 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "fig, ax = plt.subplots(figsize=(30, 5))\n",
++    "\n",
++    "count_per_label = df.groupby('label').apply(len).sort_values(ascending=False)\n",
++    "\n",
++    "ax.bar(count_per_label.index, count_per_label.values)\n",
++    "ax.tick_params(axis='x', labelrotation=90)"
+    ]
+   },
+   {
+@@ -638,7 +686,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "df['image']"
+    ]
+   },
+   {
+@@ -656,7 +704,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "df['image'][0]"
+    ]
+   },
+   {
+@@ -674,7 +722,10 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "from PIL import Image\n",
++    "\n",
++    "img_path = df['image'][0]\n",
++    "img = Image.open(img_path)"
+    ]
+   },
+   {
+@@ -694,7 +745,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "fig, ax = plt.subplots()"
+    ]
+   },
+   {
+@@ -712,7 +763,8 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "ax.imshow(img)  # C, H, W -> H, W, C\n",
++    "fig"
+    ]
+   },
+   {
+@@ -730,7 +782,8 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "ax.tick_params(axis='both', bottom=False, left=False, labelbottom=False, labelleft=False)\n",
++    "fig"
+    ]
+   },
+   {
+@@ -748,7 +801,8 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "ax.spines[['top', 'right', 'bottom', 'left']].set_visible(False)\n",
++    "fig"
+    ]
+   },
+   {
+@@ -766,7 +820,12 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "fig, ax = plt.subplots()\n",
++    "\n",
++    "img = Image.open(img_path)\n",
++    "ax.imshow(img)\n",
++    "ax.tick_params(axis='both', bottom=False, left=False, labelbottom=False, labelleft=False)\n",
++    "ax.spines[['top', 'right', 'bottom', 'left']].set_visible(False)"
+    ]
+   },
+   {
+@@ -786,7 +845,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "df['image'][:10]"
+    ]
+   },
+   {
+@@ -806,7 +865,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "fig, axes = plt.subplots(nrows=2, ncols=5)"
+    ]
+   },
+   {
+@@ -824,7 +883,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "axes"
+    ]
+   },
+   {
+@@ -842,7 +901,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "axes.flatten()"
+    ]
+   },
+   {
+@@ -862,7 +921,15 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "img_paths = df['image'][:10]\n",
++    "\n",
++    "fig, axes = plt.subplots(nrows=2, ncols=5)\n",
++    "\n",
++    "for ax, img_path in zip(axes.flatten(), img_paths):\n",
++    "    img = Image.open(img_path)\n",
++    "    ax.imshow(img)\n",
++    "    ax.tick_params(axis='both', bottom=False, left=False, labelbottom=False, labelleft=False)\n",
++    "    ax.spines[['top', 'right', 'bottom', 'left']].set_visible(False)"
+    ]
+   },
+   {
+@@ -880,7 +947,8 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "fig.tight_layout()\n",
++    "fig"
+    ]
+   },
+   {
+@@ -898,7 +966,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "df.sample(5)"
+    ]
+   },
+   {
+@@ -916,7 +984,17 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "img_paths = df.sample(25)['image']\n",
++    "\n",
++    "fig, axes = plt.subplots(ncols=5, nrows=5)\n",
++    "\n",
++    "for ax, img_path in zip(axes.flatten(), img_paths):\n",
++    "    img = Image.open(img_path)\n",
++    "    ax.imshow(img)\n",
++    "    ax.tick_params(axis='both', bottom=False, left=False, labelbottom=False, labelleft=False)\n",
++    "    ax.spines[['top', 'right', 'bottom', 'left']].set_visible(False)\n",
++    "\n",
++    "fig.tight_layout()"
+    ]
+   },
+   {
+@@ -936,7 +1014,12 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "df_sample = df.sample(5)\n",
++    "\n",
++    "for idx, row in df_sample.iterrows():\n",
++    "    print('index:', idx)\n",
++    "    print('row:', row)\n",
++    "    print()"
+    ]
+   },
+   {
+@@ -954,7 +1037,10 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "for idx, row in df_sample.iterrows():\n",
++    "    print('image:', row['image'])\n",
++    "    print('label:', row['label'])\n",
++    "    print()"
+    ]
+   },
+   {
+@@ -972,7 +1058,23 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "df_sample = df.sample(25)\n",
++    "\n",
++    "fig, axes = plt.subplots(ncols=5, nrows=5)\n",
++    "\n",
++    "for ax, (_, row) in zip(axes.flatten(), df_sample.iterrows()):\n",
++    "    img_path = row['image']\n",
++    "    label = row['label']\n",
++    "\n",
++    "    img = Image.open(img_path)\n",
++    "    ax.imshow(img)\n",
++    "    ax.tick_params(axis='both', bottom=False, left=False, labelbottom=False, labelleft=False)\n",
++    "    ax.spines[['top', 'right', 'bottom', 'left']].set_visible(False)\n",
++    "\n",
++    "    # Put the label on top of the Axes\n",
++    "    ax.set_title(label)\n",
++    "\n",
++    "fig.tight_layout()"
+    ]
+   },
+   {
+@@ -992,7 +1094,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "df[df['label'] == 'Charmander']"
+    ]
+   },
+   {
+@@ -1010,7 +1112,21 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "df_sample = df[df['label'] == 'Charmander'].sample(25)\n",
++    "\n",
++    "fig, axes = plt.subplots(ncols=5, nrows=5)\n",
++    "\n",
++    "for ax, (_, row) in zip(axes.flatten(), df_sample.iterrows()):\n",
++    "    img_path = row['image']\n",
++    "    label = row['label']\n",
++    "\n",
++    "    img = Image.open(img_path)\n",
++    "    ax.imshow(img)\n",
++    "    ax.tick_params(axis='both', bottom=False, left=False, labelbottom=False, labelleft=False)\n",
++    "    ax.spines[['top', 'right', 'bottom', 'left']].set_visible(False)\n",
++    "    ax.set_title(label)\n",
++    "\n",
++    "fig.tight_layout()"
+    ]
+   },
+   {
+@@ -1034,7 +1150,9 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "from torchvision.transforms import v2\n",
++    "\n",
++    "resize = v2.Resize(224, antialias=True)"
+    ]
+   },
+   {
+@@ -1052,7 +1170,14 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "img_path = df['image'][0]\n",
++    "img = Image.open(img_path)\n",
++    "\n",
++    "# Apply transform\n",
++    "img = resize(img)\n",
++    "\n",
++    "fig, ax = plt.subplots()\n",
++    "ax.imshow(img)"
+    ]
+   },
+   {
+@@ -1070,7 +1195,17 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "img_path = df['image'][0]\n",
++    "img = Image.open(img_path)\n",
++    "\n",
++    "# Create transform\n",
++    "resize = v2.Resize((224, 224), antialias=True)\n",
++    "\n",
++    "# Apply transform\n",
++    "img = resize(img)\n",
++    "\n",
++    "fig, ax = plt.subplots()\n",
++    "ax.imshow(img)"
+    ]
+   },
+   {
+@@ -1088,7 +1223,19 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "img_path = df['image'][0]\n",
++    "img = Image.open(img_path)\n",
++    "\n",
++    "# Create transforms\n",
++    "resize = v2.Resize(224, antialias=True)\n",
++    "crop = v2.CenterCrop(224)\n",
++    "\n",
++    "# Apply transforms\n",
++    "img = resize(img)\n",
++    "img = crop(img)\n",
++    "\n",
++    "fig, ax = plt.subplots()\n",
++    "ax.imshow(img)"
+    ]
+   },
+   {
+@@ -1106,7 +1253,20 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "img_path = df['image'][0]\n",
++    "img = Image.open(img_path)\n",
++    "\n",
++    "# Create transforms\n",
++    "transforms = v2.Compose([\n",
++    "    v2.Resize(224, antialias=True),\n",
++    "    v2.CenterCrop(224)\n",
++    "])\n",
++    "\n",
++    "# Apply transforms\n",
++    "img = transforms(img)\n",
++    "\n",
++    "fig, ax = plt.subplots()\n",
++    "ax.imshow(img)"
+    ]
+   },
+   {
+@@ -1124,7 +1284,29 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "# Randomly sample 25 images\n",
++    "df_sample = df.sample(25)\n",
++    "\n",
++    "# Create (empty) subplots for the images\n",
++    "fig, axes = plt.subplots(ncols=5, nrows=5)\n",
++    "\n",
++    "for ax, (_, row) in zip(axes.flatten(), df_sample.iterrows()):\n",
++    "    img_path = row['image']    # The image path\n",
++    "    label = row['label']  # The Pokémon name\n",
++    "\n",
++    "    # Open image\n",
++    "    img = Image.open(img_path)\n",
++    "\n",
++    "    # Apply transforms\n",
++    "    img = transforms(img)\n",
++    "\n",
++    "    # Put image in Axes\n",
++    "    ax.imshow(img)\n",
++    "    ax.set_title(label)\n",
++    "    ax.tick_params(axis='both', bottom=False, left=False, labelbottom=False, labelleft=False)\n",
++    "    ax.spines[['top', 'right', 'bottom', 'left']].set_visible(False)\n",
++    "\n",
++    "fig.tight_layout()"
+    ]
+   },
+   {
+@@ -1146,7 +1328,38 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "import torch\n",
++    "from torchvision.io import ImageReadMode\n",
++    "\n",
++    "\n",
++    "def show_df_imgs(df, transform=None, ncols=5):\n",
++    "    ncols = min(ncols, len(df))\n",
++    "    nrows = len(df) // ncols\n",
++    "\n",
++    "    # Create (empty) subplots for the images\n",
++    "    fig, axes = plt.subplots(ncols=ncols, nrows=nrows)\n",
++    "\n",
++    "    for ax, (_, row) in zip(axes.flatten(), df_sample.iterrows()):\n",
++    "        img_path = row['image']  # The image path\n",
++    "        label = row['label']     # The Pokémon name\n",
++    "\n",
++    "        # Open image\n",
++    "        img = Image.open(img_path)\n",
++    "\n",
++    "        # Apply transforms\n",
++    "        if transform is not None:\n",
++    "            img = transform(img)\n",
++    "\n",
++    "        # Put image in Axes\n",
++    "        if isinstance(img, torch.Tensor):\n",
++    "            ax.imshow(img.permute(1, 2, 0))  # C, H, W -> H, W, C\n",
++    "        else:\n",
++    "            ax.imshow(img)\n",
++    "        ax.set_title(label)\n",
++    "        ax.tick_params(axis='both', bottom=False, left=False, labelbottom=False, labelleft=False)\n",
++    "        ax.spines[['top', 'right', 'bottom', 'left']].set_visible(False)\n",
++    "\n",
++    "    fig.tight_layout()"
+    ]
+   },
+   {
+@@ -1164,7 +1377,9 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "# Randomly sample 25 images\n",
++    "df_sample = df.sample(5)\n",
++    "show_df_imgs(df_sample)"
+    ]
+   },
+   {
+@@ -1182,7 +1397,12 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "transforms_1 = v2.Compose([\n",
++    "    v2.Resize(224, antialias=True),\n",
++    "    v2.CenterCrop(224),\n",
++    "])\n",
++    "\n",
++    "show_df_imgs(df_sample, transforms_1)"
+    ]
+   },
+   {
+@@ -1192,7 +1412,12 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "transforms_2 = v2.Compose([\n",
++    "    v2.Resize(224, antialias=True),\n",
++    "    v2.RandomCrop(224),\n",
++    "])\n",
++    "\n",
++    "show_df_imgs(df_sample, transforms_1)"
+    ]
+   },
+   {
+@@ -1202,7 +1427,11 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "transforms_3 = v2.Compose([\n",
++    "    v2.RandomResizedCrop(224, antialias=True),\n",
++    "])\n",
++    "\n",
++    "show_df_imgs(df_sample, transforms_3)"
+    ]
+   },
+   {
+@@ -1212,7 +1441,13 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "transforms_3 = v2.Compose([\n",
++    "    v2.RandomHorizontalFlip(),\n",
++    "    v2.RandomRotation(30),\n",
++    "    v2.RandomResizedCrop(224, antialias=True),\n",
++    "])\n",
++    "\n",
++    "show_df_imgs(df_sample, transforms_3)"
+    ]
+   },
+   {
+@@ -1234,7 +1469,13 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "import torch\n",
++    "\n",
++    "to_torch_img = v2.ToImage()\n",
++    "\n",
++    "torch_img = to_torch_img(img)\n",
++    "\n",
++    "torch_img"
+    ]
+   },
+   {
+@@ -1252,7 +1493,9 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "to_float32 = v2.ToDtype(torch.float32)\n",
++    "\n",
++    "to_float32(torch_img)"
+    ]
+   },
+   {
+@@ -1270,7 +1513,11 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "to_float32 = v2.ToDtype(torch.float32, scale=True)\n",
++    "\n",
++    "float32_img = to_float32(torch_img)\n",
++    "\n",
++    "float32_img"
+    ]
+   },
+   {
+@@ -1288,7 +1535,9 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "normalize = v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])\n",
++    "\n",
++    "normalize(float32_img)"
+    ]
+   },
+   {
+@@ -1306,7 +1555,13 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "transforms = v2.Compose([\n",
++    "    v2.ToImage(),\n",
++    "    v2.ToDtype(torch.float32, scale=True),\n",
++    "    v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),\n",
++    "])\n",
++    "\n",
++    "transforms(img)"
+    ]
+   },
+   {
+@@ -1324,7 +1579,14 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "transforms = v2.Compose([\n",
++    "    v2.RandomResizedCrop(224, antialias=True),\n",
++    "    v2.ToImage(),\n",
++    "    v2.ToDtype(torch.float32, scale=True),\n",
++    "    v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),\n",
++    "])\n",
++    "\n",
++    "transforms(img)"
+    ]
+   },
+   {
+@@ -1342,7 +1604,14 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "transforms = v2.Compose([\n",
++    "    v2.ToImage(),\n",
++    "    v2.RandomResizedCrop(224, antialias=True),\n",
++    "    v2.ToDtype(torch.float32, scale=True),\n",
++    "    v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),\n",
++    "])\n",
++    "\n",
++    "transforms(img)"
+    ]
+   },
+   {
+@@ -1360,7 +1629,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "show_df_imgs(df_sample, transforms)"
+    ]
+   }
+  ],
+@@ -1385,4 +1654,4 @@
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+-}
+\ No newline at end of file
++}

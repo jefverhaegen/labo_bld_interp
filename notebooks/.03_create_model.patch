@@ -1,0 +1,102 @@
+--- notebooks/03_create_model_nocode.ipynb	2023-11-20 17:44:07.796632770 +0100
++++ notebooks/03_create_model.ipynb	2023-11-20 17:42:23.719278254 +0100
+@@ -21,7 +21,13 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "import torch\n",
++    "from torch.nn import Module\n",
++    "\n",
++    "\n",
++    "class SinPlusCos(Module):\n",
++    "    def forward(self, x):\n",
++    "        return torch.sin(x) + torch.cos(x)"
+    ]
+   },
+   {
+@@ -39,7 +45,11 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "sin_plus_cos = SinPlusCos()\n",
++    "\n",
++    "x = torch.tensor([0., torch.pi/2, torch.pi, 3*torch.pi/2, 2*torch.pi])\n",
++    "\n",
++    "sin_plus_cos(x)"
+    ]
+   },
+   {
+@@ -65,7 +75,10 @@
+    },
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "from torchvision.models import resnet18\n",
++    "\n",
++    "rn18 = resnet18()\n",
++    "rn18"
+    ]
+   },
+   {
+@@ -83,7 +96,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "rn18 = resnet18(weights='DEFAULT')"
+    ]
+   },
+   {
+@@ -103,7 +116,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "rn18.fc"
+    ]
+   },
+   {
+@@ -121,7 +134,13 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "import torch\n",
++    "\n",
++    "batch_size = 5\n",
++    "c, h, w = 3, 224, 224\n",
++    "\n",
++    "x = torch.randn((batch_size, c, h, w))\n",
++    "rn18(x).shape"
+    ]
+   },
+   {
+@@ -139,7 +158,9 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "from torch.nn import Linear\n",
++    "\n",
++    "rn18.fc = Linear(in_features=512, out_features=149, bias=True)"
+    ]
+   },
+   {
+@@ -157,7 +178,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "# ... WRITE YOUR CODE HERE ... #"
++    "rn18(x).shape"
+    ]
+   },
+   {
+@@ -190,4 +211,4 @@
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+-}
+\ No newline at end of file
++}
