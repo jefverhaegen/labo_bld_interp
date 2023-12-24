@@ -21,7 +21,7 @@ def get_data_loaders(
     # Create transforms
     train_tfms = v2.Compose([
         v2.RandomRotation(degrees=10),
-        v2.RandomResizedCrop(224, scale=(0.5,0.75), ratio=(3/4, 4/3)),
+        v2.RandomResizedCrop(size, antialias=True),
         v2.RandomHorizontalFlip(),
         v2.RandomVerticalFlip(),
         v2.ToImage(),
@@ -33,6 +33,15 @@ def get_data_loaders(
         v2.CenterCrop(size),
         v2.ToDtype(torch.float32, scale=True),
         v2.Normalize(mean=norm_mean, std=norm_std),
+    ])
+    train_tfms_extra = v2.Compose([
+        v2.ToImage(),
+        v2.RandomRotation(degrees=10),
+        v2.RandomResizedCrop(size, antialias=True),
+        v2.RandomHorizontalFlip(),
+        v2.ColorJitter(brightness=0.5, saturation=0.5),
+        v2.ToDtype(torch.float32, scale=True),
+        v2.Normalize(mean = norm_mean,std = norm_std),
     ])
 
     # Create datasets
