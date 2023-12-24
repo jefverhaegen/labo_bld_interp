@@ -8,7 +8,7 @@ from torchvision.models._api import Weights
 def get_model(name: str, weights: Optional[Weights]):
     if name == 'resnet18':
         model = resnet18(weights=weights)
-        model.fc = Linear(in_features=512, out_features=149, bias=True)
+        model.fc = Linear(in_features=512, out_features=10, bias=True)
     else:
         raise ValueError(f'Unsupported model "{name}"')
 

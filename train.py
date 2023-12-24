@@ -182,7 +182,7 @@ if __name__ == '__main__':
     # Data path
     parser.add_argument(
         '--data_path',
-        default='data/PokemonGen1',
+        default='data/Flowers',
         help='Path to the dataset',
     )
 

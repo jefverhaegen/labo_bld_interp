@@ -4,7 +4,7 @@ import torch
 from torch.utils.data import DataLoader
 from torchvision.transforms import v2
 
-from .pokemon_dataset import PokemonDataset
+from .flowers_dataset import FlowersDataset
 
 
 def get_data_loaders(
@@ -20,11 +20,12 @@ def get_data_loaders(
 ):
     # Create transforms
     train_tfms = v2.Compose([
-        v2.ToImage(),
+        v2.RandomRotation(degrees=10),
+        v2.RandomResizedCrop(224, scale=(0.5,0.75), ratio=(3/4, 4/3)),
         v2.RandomHorizontalFlip(),
-        v2.RandomResizedCrop(size, antialias=True),
-        v2.ToDtype(torch.float32, scale=True),
-        v2.Normalize(mean=norm_mean, std=norm_std),
+        v2.RandomVerticalFlip(),
+        v2.ToImage(),
+        v2.ToDtype(torch.float32),
     ])
     val_tfms = v2.Compose([
         v2.ToImage(),
@@ -35,9 +36,9 @@ def get_data_loaders(
     ])
 
     # Create datasets
-    ds_train = PokemonDataset(data_path, 'train',
+    ds_train = FlowersDataset(data_path, 'train',
                               transform=train_tfms)
-    ds_val = PokemonDataset(data_path, 'val',
+    ds_val = FlowersDataset(data_path, 'val',
                             transform=val_tfms)
 
     # Create data loaders
