@@ -1,14 +1,8 @@
-- accuracy random vs pretrained weights:
+The acuracy of the given dataset doesn't prove to be very accurate with an accuracy around 14% for batch_size 256.
 
 
-
-
-
+- accuracy random vs pretrained weights: There is a small improvement when using pretrained weights.
 
 - best learning rate: 
 
-
-
-
-
-- data transformation pipeline: We trained the data with Rotation, horizontal and vertical flip included but made a second transformation function that also changes the brightness, contrast and saturation of the image and normalized it with a mean and standard deviation. We also moved the ToImage method to the beginning to reduce processing time. The assumption is that this would not change the accuracy much and even make it slightly less accurate but unfortunatly this was not tested.
+- data transformation pipeline: We trained the data with rotation, horizontal and vertical flip included but made a second transformation function that also changes the brightness, contrast and saturation of the image and normalized it with a mean and standard deviation. We also moved the ToImage method to the beginning to reduce processing time. The assumption is that this would not change the accuracy much and even make it slightly less accurate but unfortunatly this was not tested.
