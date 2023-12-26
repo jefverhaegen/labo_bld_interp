@@ -1,8 +1,0 @@
-The acuracy of the given dataset doesn't prove to be very accurate with an accuracy around 14% for batch_size 256.
-
-
-- accuracy random vs pretrained weights: There is a small improvement when using pretrained weights. If we use the new transformation pipeline the difference will be much bigger.
-
-- best learning rate: For batch_size 5, the best learning rate seems to be the lowest one, which is expected to give the best accuracy.
-
-- data transformation pipeline: We trained the data with rotation, horizontal and vertical flip included but made a second transformation function that also changes the brightness, contrast and saturation of the image and normalized it with a mean and standard deviation. We also moved the ToImage method to the beginning to reduce processing time. BEcause there was a slight mistake in the previous transformation pipeline we now get a much better accuracy.

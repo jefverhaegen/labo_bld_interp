@@ -20,12 +20,11 @@ def get_data_loaders(
 ):
     # Create transforms
     train_tfms = v2.Compose([
-        v2.RandomRotation(degrees=10),
+        v2.ToImage(),
         v2.RandomResizedCrop(size, antialias=True),
         v2.RandomHorizontalFlip(),
-        v2.RandomVerticalFlip(),
-        v2.ToImage(),
         v2.ToDtype(torch.float32),
+        v2.Normalize(mean = norm_mean,std = norm_std),
     ])
     val_tfms = v2.Compose([
         v2.ToImage(),
